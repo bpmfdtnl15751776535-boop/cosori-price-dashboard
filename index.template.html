@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>COSORI 空气炸锅 · 三平台到手价对比</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --line:#e3e6eb;
+    --text:#1c2027; --muted:#6b7280; --accent:#2563eb; --accent-soft:#eaf1ff;
+    --red:#d92d20; --green:#067647; --amber:#b54708; --shadow:0 1px 3px rgba(16,24,40,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font-family:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px}
+  .wrap{max-width:1360px;margin:0 auto;padding:28px 20px 60px}
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:22px}
+  h1{font-size:25px;margin:0 0 6px;letter-spacing:-.4px}
+  .sub{color:var(--muted);font-size:13px}
+  .stamp{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;
+         color:var(--muted);font-size:12px;box-shadow:var(--shadow)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:18px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+  .stat .label{color:var(--muted);font-size:12px;margin-bottom:6px}
+  .stat .val{font-size:24px;font-weight:650;letter-spacing:-.5px}
+  .stat .val small{font-size:13px;font-weight:500;color:var(--muted)}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .tab{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:8px;
+       padding:7px 13px;cursor:pointer;font-size:13px}
+  .tab.active{background:var(--accent-soft);border-color:#b7cdfd;color:var(--accent);font-weight:600}
+  .grow{flex:1}
+  input,select{border:1px solid var(--line);background:var(--surface);color:var(--text);
+       border-radius:8px;padding:8px 11px;font-size:13px;outline:none}
+  input:focus,select:focus{border-color:var(--accent)}
+  .notice{margin:14px 16px 0;padding:10px 13px;border-radius:8px;background:#fff7ed;
+          border:1px solid #fed7aa;color:var(--amber);font-size:12.5px;line-height:1.6}
+  .notice b{font-weight:650}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{font-size:12px;color:var(--muted);font-weight:600;background:var(--surface-2);white-space:nowrap}
+  tbody tr:hover{background:#fafbfc}
+  .badge{display:inline-block;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;white-space:nowrap}
+  .b-wb{background:#ede9fe;color:#6d28d9}
+  .b-ym{background:#fff4e5;color:#b54708}
+  .b-oz{background:#e8f5f3;color:#067647}
+  .stype{display:inline-block;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;white-space:nowrap}
+  .st-local{background:#d1fadf;color:#067647;font-weight:700}
+  .st-cross{background:#d1fadf;color:#027a48;font-weight:700}
+  .st-customer{background:#ecfdf3;color:#067647}
+  .st-other{background:#feeceb;color:#b42318;font-weight:600}
+  .model{font-weight:650;color:var(--accent);white-space:nowrap}
+  .title{color:var(--text);line-height:1.45;max-width:430px}
+  .muted{color:var(--muted)}
+  .price{font-size:16px;font-weight:700;color:var(--red);white-space:nowrap}
+  .old{color:var(--muted);text-decoration:line-through;font-size:12px;margin-left:6px}
+  .disc{font-size:11px;color:var(--red);background:#feeceb;border-radius:4px;padding:2px 5px;margin-left:5px}
+  .low{font-size:10px;color:#fff;background:var(--accent);border-radius:4px;padding:2px 5px;margin-left:6px}
+  .warn{font-size:10px;color:#fff;background:var(--red);border-radius:4px;padding:2px 5px;margin-left:6px;white-space:nowrap;font-weight:600}
+  a.link{color:var(--accent);text-decoration:none;font-size:12px;white-space:nowrap}
+  a.link:hover{text-decoration:underline}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+  .foot{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.7}
+  code{background:var(--surface-2);padding:1px 5px;border-radius:4px}
+  @media(max-width:860px){
+    th:nth-child(4),td:nth-child(4),th:nth-child(6),td:nth-child(6){display:none}
+    .title{max-width:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>COSORI 空气炸锅 · 三平台到手价对比</h1>
+      <div class="sub">Wildberries · Yandex Market · Ozon — 型号 / 店铺 / 到手价 / 商品链接</div>
+    </div>
+    <div class="stamp">数据采集时间：__GENERATED_AT__</div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="label">有效商品</div><div class="val" id="s-count">—</div></div>
+    <div class="stat"><div class="label">最低到手价</div><div class="val" id="s-min">—</div></div>
+    <div class="stat"><div class="label">覆盖平台</div><div class="val" id="s-platforms">—</div></div>
+    <div class="stat"><div class="label">识别型号</div><div class="val" id="s-models">—</div></div>
+    <div class="stat"><div class="label">低价预警（低于 MSRP）</div><div class="val" id="s-warn">—</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="toolbar">
+      <div class="tabs" id="tabs"></div>
+      <div class="grow"></div>
+      <input id="search" placeholder="搜索型号 / 商品名 / 店铺" style="min-width:240px" />
+      <select id="sort">
+        <option value="price-asc">到手价：低 → 高</option>
+        <option value="price-desc">到手价：高 → 低</option>
+        <option value="platform">按平台分组</option>
+        <option value="model">按型号排序</option>
+      </select>
+    </div>
+    <div id="notice"></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th>平台</th><th>型号</th><th>商品名称</th><th>店铺</th><th>卖家类型</th>
+          <th>到手价</th><th>原价</th><th>链接</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty" style="display:none">没有符合条件的商品</div>
+  </div>
+
+  <div class="foot">
+    价格单位为俄罗斯卢布（₽）。“到手价”取平台搜索页展示的当前成交价（含平台/银行卡折扣）；原价取划线价，未展示则为 “—”。<br />
+    “卖家类型”按已知名单归类：我司本土店 / 我司跨境店 / 客户店铺 / 其他卖家；Yandex 店铺名来自搜索页商家 ID。<br />
+    低价预警：DC601 15,990 / DC112 28,990 / CP158 10,990 / P585S 17,990 / R901 20,990（₽）；低于对应 MSRP 的商品标注“扰乱价格”并置顶。<br />
+    数据由本地爬虫采集，平台页面随时可能变化；若某平台被反爬拦截，会在上方提示中配置代理后重新运行采集脚本。
+  </div>
+</div>
+
+<script>
+const PRODUCTS = /*__PRODUCTS__*/[];
+const GENERATED_AT = "__GENERATED_AT__";
+const PLATFORMS = [
+  {key:"all", label:"全部"},
+  {key:"wildberries", label:"Wildberries"},
+  {key:"yandex", label:"Yandex Market"},
+  {key:"ozon", label:"Ozon"}
+];
+const MSRP = {DC601:15990, DC112:28990, CP158:10990, P585S:17990, R901:20990};
+let active = "all";
+let keyword = "";
+let sortBy = "price-asc";
+
+function isLowPrice(p){
+  const m = MSRP[p.model];
+  return !!m && p.price < m;
+}
+function warnBadge(p){
+  return isLowPrice(p) ? `<span class="warn" title="${p.model} MSRP ${fmt(MSRP[p.model])}">扰乱价格 · 低于 MSRP</span>` : "";
+}
+
+const ok = PRODUCTS.filter(p => p.status === "ok" && p.price);
+const blocked = PRODUCTS.filter(p => p.status === "blocked");
+
+function fmt(n){
+  if(n === null || n === undefined) return "—";
+  return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(n) + " ₽";
+}
+function badge(p){
+  if(p.platform === "wildberries") return '<span class="badge b-wb">Wildberries</span>';
+  if(p.platform === "yandex") return '<span class="badge b-ym">Yandex Market</span>';
+  return '<span class="badge b-oz">Ozon</span>';
+}
+function sellerType(p){
+  const v = p.seller_type;
+  if(v === "我司本土店" || v === "我司跨境店" || v === "客户店铺" || v === "其他卖家"){
+    const cls = v === "我司本土店" ? "st-local" : v === "我司跨境店" ? "st-cross" : v === "客户店铺" ? "st-customer" : "st-other";
+    return `<span class="stype ${cls}">${v}</span>`;
+  }
+  const shop=(p.shop||"").toLowerCase(), url=(p.seller_url||"").toLowerCase();
+  if(url.includes("cosori-official-online")) return '<span class="stype st-cross">我司跨境店</span>';
+  if(url.includes("cosori-official") || (p.platform === "ozon" && shop.includes("本店自售"))) return '<span class="stype st-local">我司本土店</span>';
+  const customers=["techhub","awsd","wise mall","wiswmall","wamallb","smart mall","federal express","absolyut-treyd","абсолют трейд"];
+  if(customers.some(k=>shop.includes(k)||url.includes(k))) return '<span class="stype st-customer">客户店铺</span>';
+  return '<span class="stype st-other">其他卖家</span>';
+}
+const minByModel = {};
+for(const p of ok){
+  if(!minByModel[p.model] || p.price < minByModel[p.model]) minByModel[p.model] = p.price;
+}
+
+function render(){
+  document.getElementById("s-count").innerHTML = ok.length + ' <small>件</small>';
+  const prices = ok.map(p=>p.price).filter(Boolean);
+  document.getElementById("s-min").innerHTML = prices.length ? fmt(Math.min(...prices)) : "—";
+  document.getElementById("s-platforms").innerHTML = new Set(ok.map(p=>p.platform)).size + ' <small>/ 3</small>';
+  document.getElementById("s-models").innerHTML = new Set(ok.map(p=>p.model)).size + ' <small>种</small>';
+  document.getElementById("s-warn").innerHTML = ok.filter(isLowPrice).length + ' <small>件</small>';
+
+  document.getElementById("tabs").innerHTML = PLATFORMS.map(p=>{
+    const n = p.key === "all" ? ok.length : ok.filter(x=>x.platform===p.key).length;
+    return `<button class="tab ${p.key===active?'active':''}" data-key="${p.key}">${p.label} <span class="muted">(${n})</span></button>`;
+  }).join("");
+  document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{active=b.dataset.key;render()});
+
+  const notes = blocked.map(p=>`<b>${p.platform_cn}</b>：${p.note}`);
+  document.getElementById("notice").innerHTML = notes.length
+    ? `<div class="notice">⚠ ${notes.join("<br>")}</div>` : "";
+
+  let rows = ok.filter(p=>{
+    if(active !== "all" && p.platform !== active) return false;
+    if(keyword){
+      const hay = (p.title+" "+p.model+" "+p.shop+" "+(p.seller_type||"")).toLowerCase();
+      if(!hay.includes(keyword.toLowerCase())) return false;
+    }
+    return true;
+  });
+  rows.sort((a,b)=>{
+    // 低于 MSRP 的扰乱价格商品永远排在最前
+    const la = isLowPrice(a) ? 0 : 1, lb = isLowPrice(b) ? 0 : 1;
+    if(la !== lb) return la - lb;
+    if(sortBy === "price-asc") return (a.price??1e9)-(b.price??1e9);
+    if(sortBy === "price-desc") return (b.price??0)-(a.price??0);
+    if(sortBy === "platform") return a.platform.localeCompare(b.platform) || a.price-b.price;
+    return a.model.localeCompare(b.model) || a.price-b.price;
+  });
+
+  document.getElementById("rows").innerHTML = rows.map(p=>{
+    const disc = p.original_price && p.original_price > p.price
+      ? `<span class="disc">-${Math.round((1-p.price/p.original_price)*100)}%</span>` : "";
+    const low = minByModel[p.model] === p.price ? '<span class="low">同型号最低</span>' : "";
+    return `<tr>
+      <td>${badge(p)}</td>
+      <td><span class="model">${p.model}</span>${low}${warnBadge(p)}</td>
+      <td class="title">${p.title}${p.note?`<div class="muted" style="font-size:11px">${p.note}</div>`:''}</td>
+      <td class="muted">${p.seller_url ? `<a class="link" href="${p.seller_url}" target="_blank" rel="noopener">${p.shop || "—"} ↗</a>` : (p.shop || "—")}</td>
+      <td>${sellerType(p)}</td>
+      <td><span class="price">${fmt(p.price)}</span>${disc}</td>
+      <td class="muted">${fmt(p.original_price)}</td>
+      <td><a class="link" href="${p.url}" target="_blank" rel="noopener">查看商品 ↗</a></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("empty").style.display = rows.length ? "none" : "block";
+}
+document.getElementById("search").addEventListener("input",e=>{keyword=e.target.value;render()});
+document.getElementById("sort").addEventListener("change",e=>{sortBy=e.target.value;render()});
+render();
+</script>
+</body>
+</html>

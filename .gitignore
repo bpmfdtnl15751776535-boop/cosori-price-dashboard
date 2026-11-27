@@ -1,0 +1,14 @@
+.env
+feishu_user_token.json
+feishu_profile/
+data/
+__pycache__/
+*.pyc
+*.png
+index.html
+.wbapp_*.genie
+cmd.json
+result.json
+.workbuddy/
+setup_github.py
+github_setup.token
