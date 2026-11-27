@@ -14,7 +14,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any, Iterable
-from urllib.parse import quote, urljoin
+from urllib.parse import quote, urljoin, urlsplit, unquote
 
 import requests
 from bs4 import BeautifulSoup
@@ -27,6 +27,24 @@ HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
 }
 MSK_TZ = timezone(timedelta(hours=3))
+
+
+def playwright_proxy(url: str) -> dict[str, str] | None:
+    """把 http://user:pass@host:port 拆成 Playwright 的 server/username/password。
+
+    Playwright 不接受把凭据嵌在 server URL 里（会报 ERR_INVALID_AUTH_CREDENTIALS），
+    必须拆开传。无代理返回 None。
+    """
+    if not url:
+        return None
+    s = urlsplit(url)
+    server = f"{s.scheme}://{s.hostname}:{s.port}" if s.hostname and s.port else url
+    out = {"server": server}
+    if s.username:
+        out["username"] = unquote(s.username)
+    if s.password:
+        out["password"] = unquote(s.password)
+    return out
 
 AIRFRYER_WORDS = ("аэрогриль", "аэро гриль", "фритюрниц", "air fryer", "аэрогрил")
 ACCESSORY_WORDS = ("коврик", "силикон", "cookbook", "рецепт", "книг", "чехол",
@@ -468,13 +486,15 @@ def _scrape_wb_browser(proxy: str | None) -> list[Product]:
     except ImportError:
         return []
     import os
-    use_proxy = proxy or os.environ.get("COSORI_PROXY") or os.environ.get("HTTPS_PROXY")
+    # 只用显式传入或 COSORI_PROXY 指定的代理；绝不读 HTTPS_PROXY（那通常是本机 VPN/系统代理，
+    # 会让 Playwright 走错出口导致 WB 498 / Ozon 403，实测裸连反而正常）。
+    use_proxy = proxy or os.environ.get("COSORI_PROXY")
     out: list[Product] = []
     try:
         with sync_playwright() as p:
             launch_kwargs: dict[str, Any] = {
                 "headless": True,
-                "proxy": {"server": use_proxy} if use_proxy else None,
+                "proxy": playwright_proxy(use_proxy),
                 "args": ["--disable-blink-features=AutomationControlled", "--no-sandbox"],
             }
             if os.environ.get("COSORI_BROWSER") != "chromium":
@@ -635,13 +655,15 @@ def _scrape_ozon_browser(proxy: str | None) -> list[Product]:
     except ImportError:
         return []
     import os
-    use_proxy = proxy or os.environ.get("COSORI_PROXY") or os.environ.get("HTTPS_PROXY")
+    # 只用显式传入或 COSORI_PROXY 指定的代理；绝不读 HTTPS_PROXY（那通常是本机 VPN/系统代理，
+    # 会让 Playwright 走错出口导致 WB 498 / Ozon 403，实测裸连反而正常）。
+    use_proxy = proxy or os.environ.get("COSORI_PROXY")
     out: list[Product] = []
     try:
         with sync_playwright() as p:
             launch_kwargs: dict[str, Any] = {
                 "headless": True,
-                "proxy": {"server": use_proxy} if use_proxy else None,
+                "proxy": playwright_proxy(use_proxy),
                 "args": ["--disable-blink-features=AutomationControlled", "--no-sandbox"],
             }
             if os.environ.get("COSORI_BROWSER") != "chromium":
