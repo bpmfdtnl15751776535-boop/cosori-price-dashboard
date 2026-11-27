@@ -14,14 +14,15 @@ import time
 from pathlib import Path
 
 import requests
-from scrapers import Product
+from scrapers import Product, playwright_proxy
 from scraper import render_html
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data" / "products.json"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
-PROXY = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+# 只读显式配置的代理，绝不读 HTTPS_PROXY 系统代理（本机 VPN/WorkBuddy 注入会让 WB 498）
+PROXY = os.environ.get("COSORI_PROXY") or ""
 
 
 def main() -> int:
@@ -39,7 +40,7 @@ def main() -> int:
     with sync_playwright() as p:
         b = p.chromium.launch(
             channel="chrome", headless=True,
-            proxy={"server": PROXY} if PROXY else None,
+            proxy=playwright_proxy(PROXY),
             args=["--disable-blink-features=AutomationControlled", "--no-sandbox"])
         ctx = b.new_context(locale="ru-RU", viewport={"width": 1440, "height": 900}, user_agent=UA)
         ctx.add_init_script("Object.defineProperty(navigator,'webdriver',{get:()=>undefined})")
