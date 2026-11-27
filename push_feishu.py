@@ -302,8 +302,18 @@ def main() -> int:
         push_card(products, generated_at)
         print(f"[OK] 飞书卡片已推送（{len(products)} 件）")
     if args.mode in ("bitable", "both"):
-        n = push_bitable(products, replace=not args.append)
-        print(f"[OK] 多维表格已写入 {n} 条")
+        try:
+            n = push_bitable(products, replace=not args.append)
+            print(f"[OK] 多维表格已写入 {n} 条")
+        except RuntimeError as e:
+            # 用户凭证过期/被占用时不要让整个流程失败；群卡片已照常推送
+            msg = str(e)
+            if "刷新用户凭证失败" in msg or "重新授权" in msg or "refresh_token" in msg:
+                print("[WARN] 多维表格写入跳过：飞书用户凭证需重新 OAuth 授权。"
+                      "方法见 FEISHU_SETUP_GUIDE.md 的「用户身份授权」章节")
+                print(f"[WARN] 详情：{msg[:200]}")
+            else:
+                raise
     return 0
 
 
