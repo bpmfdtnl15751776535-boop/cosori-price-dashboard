@@ -1,7 +1,8 @@
 .env
 feishu_user_token.json
 feishu_profile/
-data/
+data/*
+!data/last_good.json
 __pycache__/
 *.pyc
 *.png
