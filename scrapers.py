@@ -41,7 +41,7 @@ YANDEX_SHOP_NAMES = {
 }
 CUSTOMER_SHOPS = ("techhub", "awsd", "wise mall", "wiswmall", "wamallb",
                   "smart mall", "federal express", "absolyut-treyd",
-                  "абсолют трейд")
+                  "абсолют трейд", "супер-центр")
 OWN_LOCAL_URL = "https://www.ozon.ru/seller/cosori-official/"
 OWN_CROSS_URL = "https://www.ozon.ru/seller/cosori-official-online/"
 
