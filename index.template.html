@@ -115,7 +115,7 @@
   <div class="foot">
     价格单位为俄罗斯卢布（₽）。“到手价”取平台搜索页展示的当前成交价（含平台/银行卡折扣）；原价取划线价，未展示则为 “—”。<br />
     “卖家类型”按已知名单归类：我司本土店 / 我司跨境店 / 客户店铺 / 其他卖家；Yandex 店铺名来自搜索页商家 ID。<br />
-    低价预警：DC601 15,990 / DC112 28,990 / CP158 10,990 / P585S 17,990 / R901 20,990（₽）；低于对应 MSRP 的商品标注“扰乱价格”并置顶。<br />
+    低价预警：DC601 15,990 / DC112 28,990 / CP158 10,990 / P585S 17,990 / R901 20,990（₽）；低于对应 MSRP 的商品标注“低于 MSRP”并置顶。<br />
     数据由本地爬虫采集，平台页面随时可能变化；若某平台被反爬拦截，会在上方提示中配置代理后重新运行采集脚本。
   </div>
 </div>
@@ -139,7 +139,7 @@ function isLowPrice(p){
   return !!m && p.price < m;
 }
 function warnBadge(p){
-  return isLowPrice(p) ? `<span class="warn" title="${p.model} MSRP ${fmt(MSRP[p.model])}">扰乱价格 · 低于 MSRP</span>` : "";
+  return isLowPrice(p) ? `<span class="warn" title="${p.model} MSRP ${fmt(MSRP[p.model])}">低于 MSRP</span>` : "";
 }
 
 const ok = PRODUCTS.filter(p => p.status === "ok" && p.price);
@@ -163,7 +163,7 @@ function sellerType(p){
   const shop=(p.shop||"").toLowerCase(), url=(p.seller_url||"").toLowerCase();
   if(url.includes("cosori-official-online")) return '<span class="stype st-cross">我司跨境店</span>';
   if(url.includes("cosori-official") || (p.platform === "ozon" && shop.includes("本店自售"))) return '<span class="stype st-local">我司本土店</span>';
-  const customers=["techhub","awsd","wise mall","wiswmall","wamallb","smart mall","federal express","absolyut-treyd","абсолют трейд"];
+  const customers=["techhub","awsd","wise mall","wiswmall","wamallb","smart mall","federal express","absolyut-treyd","абсолют трейд","супер-центр"];
   if(customers.some(k=>shop.includes(k)||url.includes(k))) return '<span class="stype st-customer">客户店铺</span>';
   return '<span class="stype st-other">其他卖家</span>';
 }
@@ -199,7 +199,7 @@ function render(){
     return true;
   });
   rows.sort((a,b)=>{
-    // 低于 MSRP 的扰乱价格商品永远排在最前
+    // 低于 MSRP 的商品永远排在最前
     const la = isLowPrice(a) ? 0 : 1, lb = isLowPrice(b) ? 0 : 1;
     if(la !== lb) return la - lb;
     if(sortBy === "price-asc") return (a.price??1e9)-(b.price??1e9);
