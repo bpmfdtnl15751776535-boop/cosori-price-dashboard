@@ -48,6 +48,8 @@ def main() -> int:
     ap.add_argument("--skip-wildberries", action="store_true")
     ap.add_argument("--skip-yandex", action="store_true")
     ap.add_argument("--skip-ozon", action="store_true")
+    ap.add_argument("--no-fallback", action="store_true",
+                    help="平台被拦截时不使用 data/last_good.json 的历史数据补位")
     args = ap.parse_args()
 
     generated_at = now_str()
@@ -73,6 +75,37 @@ def main() -> int:
         print(f"  -> {len(items)} 条"
               + (f"（状态：{items[0].status}）" if items else ""), flush=True)
         all_products.extend(items)
+
+    # 平台被反爬拦截时，用上次成功采集的该平台数据补位，避免看板丢数据
+    if not args.no_fallback:
+        fallback_path = DATA_DIR / "last_good.json"
+        if fallback_path.exists():
+            try:
+                old = json.loads(fallback_path.read_text(encoding="utf-8"))
+                old_products = old.get("products", [])
+                # 按平台统计本次有效商品
+                ok_platforms = {p.platform for p in all_products
+                                if p.status == "ok" and p.price}
+                restored = []
+                seen = set()
+                for r in old_products:
+                    plat = r.get("platform", "")
+                    if plat in ok_platforms or r.get("status") != "ok":
+                        continue
+                    key = (plat, r.get("url", "") or r.get("title", ""))
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    item = Product(**r)
+                    item.note = (item.note + "；" if item.note else "") + "历史数据（本次该平台被拦截）"
+                    restored.append(item)
+                if restored:
+                    print(f"[补位] 用上次成功数据补回 {len(restored)} 条："
+                          + ", ".join(sorted({p.platform_cn for p in restored})), flush=True)
+                    # 保留本次采集记录（含被拦截提示），再追加历史补位数据
+                    all_products = all_products + restored
+            except Exception as exc:
+                print(f"[补位] 读取历史数据失败（忽略）：{exc}", flush=True)
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     payload = {
