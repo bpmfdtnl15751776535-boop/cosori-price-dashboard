@@ -57,7 +57,8 @@ jobs:
           COSORI_PROXY: ${{ secrets.COSORI_PROXY }}
           HTTPS_PROXY: ${{ secrets.COSORI_PROXY }}
           HTTP_PROXY: ${{ secrets.COSORI_PROXY }}
-        run: python scraper.py --pages 2
+        # 云端无代理时 WB/Ozon 会被反爬拦截，多抓几页 Yandex 作为补偿
+        run: python scraper.py --pages 4
 
       - name: 合并 Ozon Seller 数据（只读）
         env:
