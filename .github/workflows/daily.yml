@@ -17,8 +17,6 @@ permissions:
 env:
   # 使用 Playwright 自带的 Chromium，避免依赖本机 Chrome
   COSORI_BROWSER: chromium
-  # 飞书用户凭证回写开关（可选），见下方步骤
-  GH_PAT_CHECK: ${{ secrets.GH_PAT }}
 
 jobs:
   update:
@@ -40,17 +38,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           playwright install --with-deps chromium
-
-      - name: 恢复飞书用户凭证
-        env:
-          FEISHU_USER_TOKEN_JSON: ${{ secrets.FEISHU_USER_TOKEN_JSON }}
-        run: |
-          if [ -n "$FEISHU_USER_TOKEN_JSON" ]; then
-            printf '%s' "$FEISHU_USER_TOKEN_JSON" > feishu_user_token.json
-            echo "已写入飞书用户凭证"
-          else
-            echo "未配置 FEISHU_USER_TOKEN_JSON，多维表格写入将跳过"
-          fi
 
       - name: 采集三平台价格
         env:
@@ -99,21 +86,12 @@ jobs:
           publish_branch: gh-pages
           keep_files: false
 
-      - name: 推送飞书表格与群卡片
+      # 云端只推群卡片（webhook 即可，不需要用户凭证）；
+      # 多维表格由工作日本地电脑写入，避免本地与云端争用一次性 refresh_token
+      - name: 推送飞书群卡片
         if: steps.count.outputs.valid != '0'
         env:
           FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           FEISHU_WEBHOOK_SECRET: ${{ secrets.FEISHU_WEBHOOK_SECRET }}
-          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
-          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
-          FEISHU_APP_TOKEN: ${{ secrets.FEISHU_APP_TOKEN }}
-          FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
           DASHBOARD_URL: ${{ secrets.DASHBOARD_URL || format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) }}
-        run: python push_feishu.py --mode both
-
-      - name: 回写刷新后的飞书用户凭证（可选）
-        if: steps.count.outputs.valid != '0' && env.GH_PAT_CHECK != ''
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          gh secret set FEISHU_USER_TOKEN_JSON --body "$(cat feishu_user_token.json)" -R "$GITHUB_REPOSITORY" || echo "凭证回写失败，请在重新 OAuth 后手动更新 Secret"
+        run: python push_feishu.py --mode card
