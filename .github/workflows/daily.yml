@@ -40,11 +40,9 @@ jobs:
           playwright install --with-deps chromium
 
       - name: 采集三平台价格
-        env:
-          COSORI_PROXY: ${{ secrets.COSORI_PROXY }}
-          HTTPS_PROXY: ${{ secrets.COSORI_PROXY }}
-          HTTP_PROXY: ${{ secrets.COSORI_PROXY }}
-        # 云端无代理时 WB/Ozon 会被反爬拦截，多抓几页 Yandex 作为补偿
+        # 实测：住宅代理对 WB 有害（498）、对 Ozon 无效（403），裸连反而 WB/Yandex 正常。
+        # 因此不注入任何代理；云端 WB 若被机房 IP 拦截，由 last_good.json 补位。
+        # 多抓几页 Yandex 作为补偿。
         run: python scraper.py --pages 4
 
       - name: 合并 Ozon Seller 数据（只读）
@@ -60,10 +58,6 @@ jobs:
           fi
 
       - name: 补全 Wildberries 店铺名
-        env:
-          COSORI_PROXY: ${{ secrets.COSORI_PROXY }}
-          HTTPS_PROXY: ${{ secrets.COSORI_PROXY }}
-          HTTP_PROXY: ${{ secrets.COSORI_PROXY }}
         run: python enrich_shops.py
 
       - name: 统计有效商品
